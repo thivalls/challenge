@@ -1,19 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TicketController;
+use App\Http\Controllers\ChargeController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+Route::apiResource('charges', ChargeController::class)->except('view', 'create');
 
-Route::apiResource('tickets', TicketController::class);
-Route::post('tickets/upload', [TicketController::class, 'upload'])->name('tickets.upload');
+// Não usaria estas rotas em produção, coloquei apenas para fins de take home test.
+// Fiz teste utilizando um processo manual e outro utilizando uma lib
+// Adicionei um middleware para não precisar aumentar a configuração de timeout no php.ini, mas depois vi que não havia necessidade
+Route::post('billings/upload/lib', [ChargeController::class, 'upload_lib'])->name('billings.upload.lib')->middleware('increaseExecutionTime');
+Route::post('billings/upload/native', [ChargeController::class, 'upload_native'])->name('billings.upload.native')->middleware('increaseExecutionTime');
