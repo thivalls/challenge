@@ -14,13 +14,13 @@ class SendNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $collection;
+    public $data;
     /**
      * Create a new job instance.
      */
-    public function __construct($collection)
+    public function __construct($data)
     {
-        $this->collection = $collection;
+        $this->data = $data;
     }
 
     /**
@@ -28,7 +28,7 @@ class SendNotificationJob implements ShouldQueue
      */
     public function handle(): void
     {
-        foreach ($this->collection as $data) {
+        foreach ($this->data as $data) {
             if (str_contains($data[2], '@')) {
                 Mail::to($data[2])->send(new ChargeMail($data));
             }

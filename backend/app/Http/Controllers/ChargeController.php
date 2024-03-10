@@ -76,20 +76,20 @@ class ChargeController extends Controller
                 throw new \Exception("It is not possible reading file");
             }
 
-            $batchSize = 1000;
+            $batchSize = 100;
             $batch = [];
 
             while (($row = fgetcsv($handle)) !== false) {
                 $batch[] = $row;
 
                 if (count($batch) >= $batchSize) {
-                    $this->processBatch($batch);
+                    SendNotificationJobBatch::dispatch($batch);
                     $batch = [];
                 }
             }
 
             if (count($batch) > 0) {
-                $this->processBatch($batch);
+                SendNotificationJobBatch::dispatch($batch);
             }
 
             fclose($handle);
@@ -109,7 +109,7 @@ class ChargeController extends Controller
             throw new \Exception("It is not possible reading file");
         }
 
-        \Excel::import(new ChargeImporter(), $request->file('billing_list'));
+        \Excel::queueImport(new ChargeImporter(), $request->file('billing_list'));
 
         Charge::create([
             'user_id' => $request->user_id,
@@ -117,11 +117,6 @@ class ChargeController extends Controller
         ]);
 
         return response()->json(["sent" => "upload completed successfully"]);
-    }
-
-    private function processBatch(array $batch)
-    {
-        SendNotificationJobBatch::dispatch($batch);
     }
 }
 
