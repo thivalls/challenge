@@ -14,7 +14,7 @@ class SendNotificationJobBatch implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $data;
+    public array $data;
 
     /**
      * Create a new job instance.

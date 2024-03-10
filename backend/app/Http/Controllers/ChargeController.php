@@ -6,6 +6,7 @@ use App\Http\Requests\BillingListRequest;
 use App\Http\Requests\StoreChargeRequest;
 use App\Http\Requests\UpdateChargeRequest;
 use App\Importer\ChargeImporter;
+use App\Jobs\SendNotificationJob;
 use App\Jobs\SendNotificationJobBatch;
 use App\Models\Charge;
 use Illuminate\Http\JsonResponse;
@@ -83,13 +84,13 @@ class ChargeController extends Controller
                 $batch[] = $row;
 
                 if (count($batch) >= $batchSize) {
-                    SendNotificationJobBatch::dispatch($batch);
+                    SendNotificationJob::dispatch($batch);
                     $batch = [];
                 }
             }
 
             if (count($batch) > 0) {
-                SendNotificationJobBatch::dispatch($batch);
+                SendNotificationJob::dispatch($batch);
             }
 
             fclose($handle);
