@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CreateChargeAfterUploadFileEvent;
 use App\Http\Requests\BillingListRequest;
 use App\Http\Requests\StoreChargeRequest;
 use App\Http\Requests\UpdateChargeRequest;
@@ -76,10 +77,17 @@ class ChargeController extends Controller
             fclose($handle);
         }
 
-        Charge::create([
+//        Inline code to create new Charge register
+//        Charge::create([
+//            'user_id' => $request->user_id,
+//            'file_name' => $request->file('billing_list')->getClientOriginalName()
+//        ]);
+
+        //  using events to create
+        event(new CreateChargeAfterUploadFileEvent([
             'user_id' => $request->user_id,
             'file_name' => $request->file('billing_list')->getClientOriginalName()
-        ]);
+        ]));
 
         return response()->json(["sent" => "upload completed successfully"]);
     }
@@ -91,11 +99,18 @@ class ChargeController extends Controller
         }
 
         \Excel::queueImport(new ChargeImporter(), $request->file('billing_list'));
+        
+//        Inline code to create new Charge register
+//        Charge::create([
+//            'user_id' => $request->user_id,
+//            'file_name' => $request->file('billing_list')->getClientOriginalName()
+//        ]);
 
-        Charge::create([
+        //  using events to create
+        event(new CreateChargeAfterUploadFileEvent([
             'user_id' => $request->user_id,
             'file_name' => $request->file('billing_list')->getClientOriginalName()
-        ]);
+        ]));
 
         return response()->json(["sent" => "upload completed successfully"]);
     }
