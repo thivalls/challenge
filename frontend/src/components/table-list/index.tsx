@@ -26,8 +26,6 @@ interface ChargeApiResult {
   meta: LaravelResourceMeta;
 }
 
-const ITEMS_PER_PAGE = 10;
-
 const DataTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [charges, setCharges] = useState<ChargeApiResult>(() =>
