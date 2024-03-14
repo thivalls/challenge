@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BillingListRequest;
 use App\Http\Requests\StoreChargeRequest;
 use App\Http\Requests\UpdateChargeRequest;
+use App\Http\Resources\ChargeListResource;
 use App\Importer\ChargeImporter;
 use App\Jobs\SendNotificationJob;
 use App\Jobs\SendNotificationJobBatch;
@@ -13,57 +14,36 @@ use Illuminate\Http\JsonResponse;
 
 class ChargeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return Charge::all();
+        return ChargeListResource::collection(Charge::paginate(10));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreChargeRequest $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Charge $charge)
     {
-        //
+        return new ChargeListResource($charge);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Charge $charge)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateChargeRequest $request, Charge $charge)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Charge $charge)
     {
         //

@@ -9,6 +9,11 @@ class Charge extends Model
 {
     use HasFactory;
 
+    // possibilidade de fazer cast de data via model
+    //    protected $casts = [
+    //        'created_at' => 'datetime:d/m/Y',
+    //    ];
+
     protected $fillable = [
         'id',
         'user_id',
